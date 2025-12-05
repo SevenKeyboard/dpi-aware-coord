@@ -6,7 +6,7 @@
 setThreadDpiAwarenessContext(-2)
 pToken:=Gdip_Startup()
 onExit("exitFunc")
-exitFunc(ExitReason, ExitCode)   {
+exitFunc(exitReason, exitCode)   {
     global
     if (pToken)
         Gdip_Shutdown(ptoken)
