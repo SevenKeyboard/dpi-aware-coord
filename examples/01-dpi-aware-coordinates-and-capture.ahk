@@ -83,8 +83,8 @@ F3::
 /*
 Example Usage:
   F6 — Captures the active window using a simple HWND-based DPI helper.
-       This intentionally demonstrates how HWND-only capture can misalign
-       with what you see on screen in mixed DPI/monitor scenarios.
+       This intentionally demonstrates how capturing via Gdip_DpiBitmapFromHWND
+       can misalign with what you see on screen in mixed DPI/monitor scenarios.
 
   F7 — Captures the active window’s screen region per monitor using
        screen/monitor coordinates instead. This improved version matches
