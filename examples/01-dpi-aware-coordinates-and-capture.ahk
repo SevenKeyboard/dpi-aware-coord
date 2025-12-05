@@ -59,7 +59,7 @@ Example Usage:
        On high-DPI / per-monitor setups, using MouseGetPos coordinates directly
        in MouseMove can move the cursor away from its visible position.
        This hotkey converts the raw System coordinates to Per-Monitor coordinates
-       so that moving the mouse “to the same position” keeps it visually in place.
+       so that moving the mouse "to the same position" keeps it visually in place.
 */
 F3::
     prevCMM:=A_CoordModeMouse
