@@ -38,7 +38,7 @@ class VersionManager_DpiAwareCoord
     }
 }
 ;---------------------------------------------
-class DpiAwareCoord ;  ahk1.1
+class DpiAwareCoord
 {
     ;-----------------------------------------------------
     ;  UNAWARE  =>  SYSTEM
@@ -47,7 +47,7 @@ class DpiAwareCoord ;  ahk1.1
         ,uY:=y
         ,i:=(i?i:pointGetWhichMonitor(uX,uY,this.MONITOR_DEFAULTTONEAREST))
         ,obj:=monitorExGetInfo(i)
-        if (ErrorLevel)
+        if (errorLevel)
             return
         primaryScaleFactor:=monitorExGetScaleFactor()
         ,sLeft  := obj.rcMonitor.left*(primaryScaleFactor/100)
@@ -67,7 +67,7 @@ class DpiAwareCoord ;  ahk1.1
         ,uY:=y
         ,i:=(i?i:pointGetWhichMonitor(uX,uY,this.MONITOR_DEFAULTTONEAREST))
         ,obj:=monitorExGetInfo(i)
-        if (ErrorLevel)
+        if (errorLevel)
             return
         ithScaleFactor:=monitorExGetScaleFactor(i)
         ,mX:=round(obj.rcMonitor.left+(uX-obj.rcMonitor.left)*(ithScaleFactor/100))
@@ -82,7 +82,7 @@ class DpiAwareCoord ;  ahk1.1
         ,sY:=y
         ,i:=(i?i:pointGetWhichMonitor(sX,sY,this.MONITOR_DEFAULTTONEAREST))
         ,obj:=monitorExGetInfo(i)
-        if (ErrorLevel)
+        if (errorLevel)
             return
         iX:=obj.rcMonitor.left
         ,iY:=obj.rcMonitor.top
@@ -101,7 +101,7 @@ class DpiAwareCoord ;  ahk1.1
         ,sY:=y
         ,i:=(i?i:pointGetWhichMonitor(sX,sY,this.MONITOR_DEFAULTTONEAREST))
         ,obj:=monitorExGetInfo(i)
-        if (ErrorLevel)
+        if (errorLevel)
             return
         iX:=obj.rcMonitor.left
         ,iY:=obj.rcMonitor.top
@@ -121,7 +121,7 @@ class DpiAwareCoord ;  ahk1.1
         ,mY:=y
         ,i:=(i?i:pointGetWhichMonitor(mX,mY,this.MONITOR_DEFAULTTONEAREST))
         ,obj:=monitorExGetInfo(i)
-        if (ErrorLevel)
+        if (errorLevel)
             return
         ithScaleFactor:=monitorExGetScaleFactor(i)
         ,sX:=round(obj.rcMonitor.left+(mX-obj.rcMonitor.left)/(ithScaleFactor/100))
@@ -135,7 +135,7 @@ class DpiAwareCoord ;  ahk1.1
         ,mY:=y
         ,i:=(i?i:pointGetWhichMonitor(mX,mY,this.MONITOR_DEFAULTTONEAREST))
         ,obj:=monitorExGetInfo(i)
-        if (ErrorLevel)
+        if (errorLevel)
             return
         ithScaleFactor:=monitorExGetScaleFactor(i)
         ,primaryScaleFactor:=monitorExGetScaleFactor()
