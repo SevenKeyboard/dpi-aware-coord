@@ -1,9 +1,9 @@
 ﻿#Requires AutoHotkey v1.1
 #SingleInstance Force
 #Include .\lib\DpiAwarenessContextUtils.ahk
-#Include .\lib\Gdip_All.ahk ;  Tested with https://github.com/mmikeww/AHKv2-Gdip/blob/cab5ae291023c790ce4081630b190b5b88409f48/Gdip_All.ahk
 #Include .\lib\GdipAllExUtils.ahk
 #Include .\lib\winGetWhichMonitor.ahk
+#Include .\vendor\Gdip_All.ahk ;  Tested with https://github.com/mmikeww/AHKv2-Gdip/blob/cab5ae291023c790ce4081630b190b5b88409f48/Gdip_All.ahk
 setThreadDpiAwarenessContext(-2)
 pToken:=Gdip_Startup()
 onExit("exitFunc")
