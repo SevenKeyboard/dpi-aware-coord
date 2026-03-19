@@ -20,7 +20,7 @@ class VersionManager_DpiAwareCoord
     static _ := VersionManager_DpiAwareCoord._init()
     _init()    {
         global
-        DPIAWARECOORD_VERSION := "1.0.0"
+        DPIAWARECOORD_VERSION := "1.1.0"
         if (!this._verCheck(MONITOREXGETUTILS_VERSION, "1.0.0"))
             throw exception("MonitorExGetUtils version 1.x is required (minimum 1.0.0).")
         if (!this._verCheck(POINTGETWHICHMONITOR_VERSION, "1.0.0"))
@@ -40,9 +40,14 @@ class VersionManager_DpiAwareCoord
 ;---------------------------------------------
 class DpiAwareCoord
 {
+    MONITOR_DEFAULTTONEAREST    {
+        get  {
+            return 0x00000002
+        }
+    }
     ;-----------------------------------------------------
     ;  UNAWARE  =>  SYSTEM
-    convertUnwToSys(byRef x, byRef y, i:=0)    {
+    convertUnwToSys(byRef x, byRef y, i:=0, doRound := true)    {
          uX:=x
         ,uY:=y
         ,i:=(i?i:pointGetWhichMonitor(uX,uY,this.MONITOR_DEFAULTTONEAREST))
@@ -56,13 +61,13 @@ class DpiAwareCoord
         ,sBottom:= sTop+(obj.rcMonitor.bottom-obj.rcMonitor.top)/(100/primaryScaleFactor)
         ,ratioW := (uX-obj.rcMonitor.left)/(obj.rcMonitor.right-obj.rcMonitor.left)
         ,ratioH := (uY-obj.rcMonitor.top)/(obj.rcMonitor.bottom-obj.rcMonitor.top)
-        ,sX:=round(sLeft+(sRight-sLeft)*ratioW)
-        ,sY:=round(sTop+(sBottom-sTop)*ratioH)
-        ,x:=sX
-        ,y:=sY
+        ,sX:=sLeft+(sRight-sLeft)*ratioW
+        ,sY:=sTop+(sBottom-sTop)*ratioH
+        ,x:=doRound?round(sX):sX
+        ,y:=doRound?round(sY):sY
     }
     ;  UNAWARE  =>  PER_MONITOR
-    convertUnwToMon(byRef x, byRef y, i:=0)    {
+    convertUnwToMon(byRef x, byRef y, i:=0, doRound := true)    {
          uX:=x
         ,uY:=y
         ,i:=(i?i:pointGetWhichMonitor(uX,uY,this.MONITOR_DEFAULTTONEAREST))
@@ -70,14 +75,14 @@ class DpiAwareCoord
         if (errorLevel)
             return
         ithScaleFactor:=monitorExGetScaleFactor(i)
-        ,mX:=round(obj.rcMonitor.left+(uX-obj.rcMonitor.left)*(ithScaleFactor/100))
-        ,mY:=round(obj.rcMonitor.Top+(uY-obj.rcMonitor.Top)*(ithScaleFactor/100))
-        ,x:=mX
-        ,y:=mY
+        ,mX:=obj.rcMonitor.left+(uX-obj.rcMonitor.left)*(ithScaleFactor/100)
+        ,mY:=obj.rcMonitor.Top+(uY-obj.rcMonitor.Top)*(ithScaleFactor/100)
+        ,x:=doRound?round(mX):mX
+        ,y:=doRound?round(mY):mY
     }
     ;-----------------------------------------------------
     ;  SYSTEM  =>  UNAWARE
-    convertSysToUnw(byRef x, byRef y, i:=0)   {
+    convertSysToUnw(byRef x, byRef y, i:=0, doRound := true)   {
          sX:=x
         ,sY:=y
         ,i:=(i?i:pointGetWhichMonitor(sX,sY,this.MONITOR_DEFAULTTONEAREST))
@@ -90,13 +95,13 @@ class DpiAwareCoord
         ,iH:=sY-iY
         ,ithScaleFactor:=monitorExGetScaleFactor(i)
         ,primaryScaleFactor:=monitorExGetScaleFactor()
-        ,uX:=round(iX/(primaryScaleFactor/100)+iW*(100/primaryScaleFactor))
-        ,uY:=round(iY/(primaryScaleFactor/100)+iH*(100/primaryScaleFactor))
-        ,x:=uX
-        ,y:=uY
+        ,uX:=iX/(primaryScaleFactor/100)+iW*(100/primaryScaleFactor)
+        ,uY:=iY/(primaryScaleFactor/100)+iH*(100/primaryScaleFactor)
+        ,x:=doRound?round(uX):uX
+        ,y:=doRound?round(uY):uY
     }
     ;  SYSTEM  =>  PER_MONITOR
-    convertSysToMon(byRef x, byRef y, i:=0)   {
+    convertSysToMon(byRef x, byRef y, i:=0, doRound := true)   {
          sX:=x
         ,sY:=y
         ,i:=(i?i:pointGetWhichMonitor(sX,sY,this.MONITOR_DEFAULTTONEAREST))
@@ -109,14 +114,14 @@ class DpiAwareCoord
         ,iH:=sY-iY
         ,ithScaleFactor:=monitorExGetScaleFactor(i)
         ,primaryScaleFactor:=monitorExGetScaleFactor()
-        ,mX:=round(iX/(primaryScaleFactor/100)+iW*(ithScaleFactor/primaryScaleFactor))
-        ,mY:=round(iY/(primaryScaleFactor/100)+iH*(ithScaleFactor/primaryScaleFactor))
-        ,x:=mX
-        ,y:=mY
+        ,mX:=iX/(primaryScaleFactor/100)+iW*(ithScaleFactor/primaryScaleFactor)
+        ,mY:=iY/(primaryScaleFactor/100)+iH*(ithScaleFactor/primaryScaleFactor)
+        ,x:=doRound?round(mX):mX
+        ,y:=doRound?round(mY):mY
     }
     ;-----------------------------------------------------
     ;  PER_MONITOR  =>  UNAWARE
-    convertMonToUnw(byRef x, byRef y, i:=0)    {
+    convertMonToUnw(byRef x, byRef y, i:=0, doRound := true)    {
          mX:=x
         ,mY:=y
         ,i:=(i?i:pointGetWhichMonitor(mX,mY,this.MONITOR_DEFAULTTONEAREST))
@@ -124,13 +129,13 @@ class DpiAwareCoord
         if (errorLevel)
             return
         ithScaleFactor:=monitorExGetScaleFactor(i)
-        ,sX:=round(obj.rcMonitor.left+(mX-obj.rcMonitor.left)/(ithScaleFactor/100))
-        ,sY:=round(obj.rcMonitor.Top+(mY-obj.rcMonitor.Top)/(ithScaleFactor/100))
-        ,x:=sX
-        ,y:=sY
+        ,sX:=obj.rcMonitor.left+(mX-obj.rcMonitor.left)/(ithScaleFactor/100)
+        ,sY:=obj.rcMonitor.Top+(mY-obj.rcMonitor.Top)/(ithScaleFactor/100)
+        ,x:=doRound?round(sX):sX
+        ,y:=doRound?round(sY):sY
     }
     ;  PER_MONITOR  =>  SYSTEM
-    convertMonToSys(byRef x, byRef y, i:=0)    {
+    convertMonToSys(byRef x, byRef y, i:=0, doRound := true)    {
          mX:=x
         ,mY:=y
         ,i:=(i?i:pointGetWhichMonitor(mX,mY,this.MONITOR_DEFAULTTONEAREST))
@@ -147,13 +152,7 @@ class DpiAwareCoord
         ,ratioH := (mY-obj.rcMonitor.top)/(obj.rcMonitor.bottom-obj.rcMonitor.top)
         ,sX:=round(sLeft+(sRight-sLeft)*ratioW)
         ,sY:=round(sTop+(sBottom-sTop)*ratioH)
-        ,x:=sX
-        ,y:=sY
-    }
-    ;-----------------------------------------------------
-    MONITOR_DEFAULTTONEAREST    {
-        get  {
-            return 0x00000002
-        }
+        ,x:=doRound?round(sX):sX
+        ,y:=doRound?round(sY):sY
     }
 }
