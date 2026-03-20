@@ -9,9 +9,10 @@
   DpiAwareCoord is designed to handle all DPI scenarios mathematically.
 */
 ;  setThreadDpiAwarenessContext(-2)
+setThreadDpiAwarenessContext(-4)
 ;----------------------------------------------
-callerDpiContext    := getThreadDpiAwarenessContextIgnoringInfoFlag()
-guiDpiContext       := -1
+callerDpiContext:=getThreadDpiAwarenessContextIgnoringInfoFlag()
+guiDpiContext:=-1
 run % A_ScriptDir "\_DpiContextGuiTest.ahk """ callerDpiContext """ """ guiDpiContext """"
 pToken:=Gdip_Startup()
 onExit("exitFunc")
@@ -45,6 +46,8 @@ F10::
     if (!hWnd)
         return
     pRaw:=Gdip_DpiBitmapFromHWND(hWnd) ;  DPI-aware replacement for Gdip_BitmapFromHWND.
+    if (!pRaw)
+        return
     splashImage % "hBitmap:" Gdip_createHBITMAPFromBitmap(pRaw)
     Gdip_disposeImage(pRaw)
     return
@@ -60,6 +63,8 @@ F11::
     winGetPos x, y, w, h, % "ahk_id " hWnd
     i:=winGetWhichMonitor(hWnd)
     pRaw:=Gdip_DpiBitmapFromScreen(x "|" y "|" w "|" h,, i) ;  DPI-aware replacement for Gdip_BitmapFromScreen.
+    if (!pRaw)
+        return
     splashImage % "hBitmap:" Gdip_createHBITMAPFromBitmap(pRaw)
     Gdip_disposeImage(pRaw)
     return
