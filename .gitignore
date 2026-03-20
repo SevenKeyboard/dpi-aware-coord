@@ -1,0 +1,3 @@
+/lib/**
+!/lib/DpiAwareCoord.ahk
+/vendor/**

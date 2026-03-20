@@ -1,7 +1,7 @@
-﻿#Requires AutoHotkey v1.1.36+
-#Include %A_ScriptDir%
-#Include .\lib\MonitorExGetUtils.ahk
-#Include .\lib\pointGetWhichMonitor.ahk
+﻿#Requires AutoHotkey v2.0.0+
+#Include "%A_ScriptDir%"
+#Include ".\lib\MonitorExGetUtils.ahk"
+#Include ".\lib\pointGetWhichMonitor.ahk"
 ;==============================================================
 ; DpiAwareCoord — DPI-aware coordinate conversion utilities
 ;
@@ -17,17 +17,17 @@
 ;==============================================================
 class VersionManager_DpiAwareCoord
 {
-    static _ := VersionManager_DpiAwareCoord._init()
-    _init()    {
+    static _ := this._init()
+    static _init()    {
         global
         DPIAWARECOORD_VERSION := "1.1.0"
-        if (!this._verCheck(MONITOREXGETUTILS_VERSION, "1.0.0"))
-            throw exception("MonitorExGetUtils version 1.x is required (minimum 1.0.0).")
-        if (!this._verCheck(POINTGETWHICHMONITOR_VERSION, "1.0.0"))
-            throw exception("pointGetWhichMonitor version 1.x is required (minimum 1.0.0).")
+        if (!this._verCheck(&MONITOREXGETUTILS_VERSION, "1.0.0"))
+            throw error("MonitorExGetUtils version 1.x is required (minimum 1.0.0).")
+        if (!this._verCheck(&POINTGETWHICHMONITOR_VERSION, "1.0.0"))
+            throw error("pointGetWhichMonitor version 1.x is required (minimum 1.0.0).")
         return true
     }
-    _verCheck(byRef actual, required)    {
+    static _verCheck(&actual, required)    {
         if !isSet(actual)
             return false
         actualMajor     := strSplit(actual, ".",, 2)[1]
@@ -40,20 +40,18 @@ class VersionManager_DpiAwareCoord
 ;---------------------------------------------
 class DpiAwareCoord
 {
-    MONITOR_DEFAULTTONEAREST    {
-        get  {
-            return 0x00000002
-        }
-    }
+    static MONITOR_DEFAULTTONEAREST => 0x00000002
     ;-----------------------------------------------------
     ;  UNAWARE  =>  SYSTEM
-    convertUnwToSys(byRef x, byRef y, i:=0, doRound := true)    {
+    static convertUnwToSys(&x, &y, i:=0, doRound := true)    {
          uX:=x
         ,uY:=y
         ,i:=(i?i:pointGetWhichMonitor(uX,uY,this.MONITOR_DEFAULTTONEAREST))
-        ,obj:=monitorExGetInfo(i)
-        if (errorLevel)
+        try  {
+            obj:=monitorExGetInfo(i)
+        }  catch  {
             return
+        }
         primaryScaleFactor:=monitorExGetScaleFactor()
         ,sLeft  := obj.rcMonitor.left*(primaryScaleFactor/100)
         ,sTop   := obj.rcMonitor.top*(primaryScaleFactor/100)
@@ -67,13 +65,15 @@ class DpiAwareCoord
         ,y:=doRound?round(sY):sY
     }
     ;  UNAWARE  =>  PER_MONITOR
-    convertUnwToMon(byRef x, byRef y, i:=0, doRound := true)    {
+    static convertUnwToMon(&x, &y, i:=0, doRound := true)    {
          uX:=x
         ,uY:=y
         ,i:=(i?i:pointGetWhichMonitor(uX,uY,this.MONITOR_DEFAULTTONEAREST))
-        ,obj:=monitorExGetInfo(i)
-        if (errorLevel)
+        try  {
+            obj:=monitorExGetInfo(i)
+        }  catch  {
             return
+        }
         ithScaleFactor:=monitorExGetScaleFactor(i)
         ,mX:=obj.rcMonitor.left+(uX-obj.rcMonitor.left)*(ithScaleFactor/100)
         ,mY:=obj.rcMonitor.Top+(uY-obj.rcMonitor.Top)*(ithScaleFactor/100)
@@ -82,13 +82,15 @@ class DpiAwareCoord
     }
     ;-----------------------------------------------------
     ;  SYSTEM  =>  UNAWARE
-    convertSysToUnw(byRef x, byRef y, i:=0, doRound := true)   {
+    static convertSysToUnw(&x, &y, i:=0, doRound := true)   {
          sX:=x
         ,sY:=y
         ,i:=(i?i:pointGetWhichMonitor(sX,sY,this.MONITOR_DEFAULTTONEAREST))
-        ,obj:=monitorExGetInfo(i)
-        if (errorLevel)
+        try  {
+            obj:=monitorExGetInfo(i)
+        }  catch  {
             return
+        }
         iX:=obj.rcMonitor.left
         ,iY:=obj.rcMonitor.top
         ,iW:=sX-iX
@@ -101,13 +103,15 @@ class DpiAwareCoord
         ,y:=doRound?round(uY):uY
     }
     ;  SYSTEM  =>  PER_MONITOR
-    convertSysToMon(byRef x, byRef y, i:=0, doRound := true)   {
+    static convertSysToMon(&x, &y, i:=0, doRound := true)   {
          sX:=x
         ,sY:=y
         ,i:=(i?i:pointGetWhichMonitor(sX,sY,this.MONITOR_DEFAULTTONEAREST))
-        ,obj:=monitorExGetInfo(i)
-        if (errorLevel)
+        try  {
+            obj:=monitorExGetInfo(i)
+        }  catch  {
             return
+        }
         iX:=obj.rcMonitor.left
         ,iY:=obj.rcMonitor.top
         ,iW:=sX-iX
@@ -121,13 +125,15 @@ class DpiAwareCoord
     }
     ;-----------------------------------------------------
     ;  PER_MONITOR  =>  UNAWARE
-    convertMonToUnw(byRef x, byRef y, i:=0, doRound := true)    {
+    static convertMonToUnw(&x, &y, i:=0, doRound := true)    {
          mX:=x
         ,mY:=y
         ,i:=(i?i:pointGetWhichMonitor(mX,mY,this.MONITOR_DEFAULTTONEAREST))
-        ,obj:=monitorExGetInfo(i)
-        if (errorLevel)
+        try  {
+            obj:=monitorExGetInfo(i)
+        }  catch  {
             return
+        }
         ithScaleFactor:=monitorExGetScaleFactor(i)
         ,sX:=obj.rcMonitor.left+(mX-obj.rcMonitor.left)/(ithScaleFactor/100)
         ,sY:=obj.rcMonitor.Top+(mY-obj.rcMonitor.Top)/(ithScaleFactor/100)
@@ -135,13 +141,15 @@ class DpiAwareCoord
         ,y:=doRound?round(sY):sY
     }
     ;  PER_MONITOR  =>  SYSTEM
-    convertMonToSys(byRef x, byRef y, i:=0, doRound := true)    {
+    static convertMonToSys(&x, &y, i:=0, doRound := true)    {
          mX:=x
         ,mY:=y
         ,i:=(i?i:pointGetWhichMonitor(mX,mY,this.MONITOR_DEFAULTTONEAREST))
-        ,obj:=monitorExGetInfo(i)
-        if (errorLevel)
+        try  {
+            obj:=monitorExGetInfo(i)
+        }  catch  {
             return
+        }
         ithScaleFactor:=monitorExGetScaleFactor(i)
         ,primaryScaleFactor:=monitorExGetScaleFactor()
         ,sLeft  := obj.rcMonitor.left*(primaryScaleFactor/100)
