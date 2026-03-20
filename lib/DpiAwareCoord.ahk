@@ -47,7 +47,7 @@ class DpiAwareCoord
     }
     ;-----------------------------------------------------
     ;  UNAWARE  =>  SYSTEM
-    convertUnwToSys(byRef x, byRef y, i:=0, doRound := true)    {
+    convertUnwToSys(byRef x, byRef y, i:=0, doRound:=true)    {
          uX:=x
         ,uY:=y
         ,i:=(i?i:pointGetWhichMonitor(uX,uY,this.MONITOR_DEFAULTTONEAREST))
@@ -67,7 +67,7 @@ class DpiAwareCoord
         ,y:=doRound?round(sY):sY
     }
     ;  UNAWARE  =>  PER_MONITOR
-    convertUnwToMon(byRef x, byRef y, i:=0, doRound := true)    {
+    convertUnwToMon(byRef x, byRef y, i:=0, doRound:=true)    {
          uX:=x
         ,uY:=y
         ,i:=(i?i:pointGetWhichMonitor(uX,uY,this.MONITOR_DEFAULTTONEAREST))
@@ -82,7 +82,7 @@ class DpiAwareCoord
     }
     ;-----------------------------------------------------
     ;  SYSTEM  =>  UNAWARE
-    convertSysToUnw(byRef x, byRef y, i:=0, doRound := true)   {
+    convertSysToUnw(byRef x, byRef y, i:=0, doRound:=true)   {
          sX:=x
         ,sY:=y
         ,i:=(i?i:pointGetWhichMonitor(sX,sY,this.MONITOR_DEFAULTTONEAREST))
@@ -101,7 +101,7 @@ class DpiAwareCoord
         ,y:=doRound?round(uY):uY
     }
     ;  SYSTEM  =>  PER_MONITOR
-    convertSysToMon(byRef x, byRef y, i:=0, doRound := true)   {
+    convertSysToMon(byRef x, byRef y, i:=0, doRound:=true)   {
          sX:=x
         ,sY:=y
         ,i:=(i?i:pointGetWhichMonitor(sX,sY,this.MONITOR_DEFAULTTONEAREST))
@@ -121,7 +121,7 @@ class DpiAwareCoord
     }
     ;-----------------------------------------------------
     ;  PER_MONITOR  =>  UNAWARE
-    convertMonToUnw(byRef x, byRef y, i:=0, doRound := true)    {
+    convertMonToUnw(byRef x, byRef y, i:=0, doRound:=true)    {
          mX:=x
         ,mY:=y
         ,i:=(i?i:pointGetWhichMonitor(mX,mY,this.MONITOR_DEFAULTTONEAREST))
@@ -135,7 +135,7 @@ class DpiAwareCoord
         ,y:=doRound?round(sY):sY
     }
     ;  PER_MONITOR  =>  SYSTEM
-    convertMonToSys(byRef x, byRef y, i:=0, doRound := true)    {
+    convertMonToSys(byRef x, byRef y, i:=0, doRound:=true)    {
          mX:=x
         ,mY:=y
         ,i:=(i?i:pointGetWhichMonitor(mX,mY,this.MONITOR_DEFAULTTONEAREST))
