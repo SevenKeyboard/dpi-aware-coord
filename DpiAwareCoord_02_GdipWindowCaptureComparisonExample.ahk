@@ -9,7 +9,6 @@
   DpiAwareCoord is designed to handle all DPI scenarios mathematically.
 */
 ;  setThreadDpiAwarenessContext(-2)
-setThreadDpiAwarenessContext(-4)
 ;----------------------------------------------
 callerDpiContext:=getThreadDpiAwarenessContextIgnoringInfoFlag()
 guiDpiContext:=-1
