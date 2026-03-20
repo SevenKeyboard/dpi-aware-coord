@@ -1,21 +1,16 @@
 ﻿#Requires AutoHotkey v1.1
 #SingleInstance Force
+#Include .\lib\DpiAwareCoord.ahk
 #Include .\lib\DpiAwarenessContextUtils.ahk
-#Include .\lib\GdipAllExUtils.ahk
-#Include .\lib\winGetWhichMonitor.ahk
-#Include .\vendor\Gdip_All.ahk ;  Tested with https://github.com/mmikeww/AHKv2-Gdip/blob/cab5ae291023c790ce4081630b190b5b88409f48/Gdip_All.ahk
-setThreadDpiAwarenessContext(-2)
-pToken:=Gdip_Startup()
-onExit("exitFunc")
-exitFunc(exitReason, exitCode)   {
-    global
-    if (pToken)
-        Gdip_Shutdown(ptoken)
-}
+/*
+  Default is -2. Change it to -1 to -5 if needed to test different DPI awareness contexts.
+  DpiAwareCoord is designed to handle all DPI scenarios mathematically.
+*/
+;  setThreadDpiAwarenessContext(-2)
 ;----------------------------------------------
 /*
 Example Usage:
-  F2 — Inspect mouse position across DPI coordinate spaces
+  F6 — Inspect mouse position across DPI coordinate spaces
        Captures the current mouse position and, based on the thread’s
        DPI awareness context, converts it between Unaware, System, and
        Per-Monitor coordinate spaces.
@@ -30,11 +25,11 @@ Example Usage:
        where each line represents:
          DPI_AWARENESS_CONTEXT    Unw (X,Y)    Sys (X,Y)    Mon (X,Y)
 */
-F2::
-    prevCMM:=A_CoordModeMouse
+F6::
+    prevRelativeTo:=A_CoordModeMouse
     coordMode Mouse, Screen
     mouseGetPos x, y
-    coordMode Mouse, % prevCMM
+    coordMode Mouse, % prevRelativeTo
     switch (dpiContext:=getThreadDpiAwarenessContextIgnoringInfoFlag())
     {
         case -1,-5:
@@ -56,14 +51,14 @@ F2::
     return
 /*
 Example Usage:
-  F3 — Demonstrate DPI-aware MouseGetPos correction
+  F7 — Demonstrate DPI-aware MouseGetPos correction
        On high-DPI / per-monitor setups, using MouseGetPos coordinates directly
        in MouseMove can move the cursor away from its visible position.
        This hotkey converts the raw System coordinates to Per-Monitor coordinates
        so that moving the mouse "to the same position" keeps it visually in place.
 */
-F3::
-    prevCMM:=A_CoordModeMouse
+F7::
+    prevRelativeTo:=A_CoordModeMouse
     coordMode Mouse, Screen
     mouseGetPos x1, y1
     switch (dpiContext:=getThreadDpiAwarenessContextIgnoringInfoFlag())
@@ -76,32 +71,7 @@ F3::
     if (getKeyState("F3","P"))
         keyWait % "F3"
     mouseMove % x2, % y2, 0
-    coordMode Mouse, % prevCMM
+    coordMode Mouse, % prevRelativeTo
     tooltip % "Raw`t`t:  (" x1 ", " y1 ")"
         . "`nCorrected`t:  (" x2 ", " y2 ")"
-    return
-;----------------------------------------------
-/*
-Example Usage:
-  F6 — Captures the active window using a simple HWND-based DPI helper.
-       This intentionally demonstrates how capturing via Gdip_DpiBitmapFromHWND
-       can misalign with what you see on screen in mixed DPI/monitor scenarios.
-
-  F7 — Captures the active window’s screen region per monitor using
-       screen/monitor coordinates instead. This improved version matches
-       the actual on-screen pixels and fixes the DPI/scale issues shown by F6.
-*/
-F6::
-    hWnd:=winExist("A")
-    pRaw:=Gdip_DpiBitmapFromHWND(hWnd)
-    splashImage % "hBitmap:" Gdip_createHBITMAPFromBitmap(pRaw)
-    Gdip_disposeImage(pRaw)
-    return
-F7::
-    hWnd:=winExist("A")
-    winGetPos x, y, w, h, % "ahk_id " hWnd
-    i:=winGetWhichMonitor(hWnd)
-    pRaw:=Gdip_DpiBitmapFromScreen(x "|" y "|" w "|" h,, i)
-    splashImage % "hBitmap:" Gdip_createHBITMAPFromBitmap(pRaw)
-    Gdip_disposeImage(pRaw)
     return
