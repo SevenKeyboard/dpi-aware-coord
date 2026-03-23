@@ -61,7 +61,7 @@ F11::
         return
     winGetPos x, y, w, h, % "ahk_id " hWnd
     i:=winGetWhichMonitor(hWnd)
-    pRaw:=Gdip_DpiBitmapFromScreen(x "|" y "|" w "|" h,, i) ;  DPI-aware replacement for Gdip_BitmapFromScreen.
+    pRaw:=Gdip_DpiBitmapFromScreen(x "|" y "|" w "|" h "|" i) ;  DPI-aware replacement for Gdip_BitmapFromScreen.
     if (!pRaw)
         return
     splashImage % "hBitmap:" Gdip_createHBITMAPFromBitmap(pRaw)
