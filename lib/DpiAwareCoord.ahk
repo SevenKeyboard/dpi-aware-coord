@@ -150,8 +150,8 @@ class DpiAwareCoord
         ,sBottom:= sTop+(obj.rcMonitor.bottom-obj.rcMonitor.top)/(ithScaleFactor/primaryScaleFactor)
         ,ratioW := (mX-obj.rcMonitor.left)/(obj.rcMonitor.right-obj.rcMonitor.left)
         ,ratioH := (mY-obj.rcMonitor.top)/(obj.rcMonitor.bottom-obj.rcMonitor.top)
-        ,sX:=round(sLeft+(sRight-sLeft)*ratioW)
-        ,sY:=round(sTop+(sBottom-sTop)*ratioH)
+        ,sX:=sLeft+(sRight-sLeft)*ratioW
+        ,sY:=sTop+(sBottom-sTop)*ratioH
         ,x:=doRound?round(sX):sX
         ,y:=doRound?round(sY):sY
     }
