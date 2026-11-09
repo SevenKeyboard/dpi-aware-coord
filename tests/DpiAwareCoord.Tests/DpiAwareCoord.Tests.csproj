@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="ahk-original.csv" CopyToOutputDirectory="PreserveNewest" />
+    <ProjectReference Include="../../src/SevenKeyboard.DpiAwareCoord/SevenKeyboard.DpiAwareCoord.csproj" />
+  </ItemGroup>
+</Project>
